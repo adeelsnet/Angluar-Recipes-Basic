@@ -1,0 +1,63 @@
+<mat-card class="my-3">
+    <mat-card-header>
+        <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+        <mat-card-title>{{recipe.title}}</mat-card-title>
+        <mat-card-subtitle>By Chef: {{recipe.chefName}}</mat-card-subtitle>
+
+        <div class="ml-auto">
+            <a routerLink='/' mat-icon-button matTooltip='View'>
+                <mat-icon color='primary'>reply</mat-icon>
+            </a>
+
+            <a [routerLink]="['/edit-recipe', recipe._id]" mat-icon-button matTooltip='Edit'>
+                <mat-icon color='orange'>create</mat-icon>
+            </a>
+
+            <button mat-icon-button matTooltip='Delete' (click)='deleteRecipe(recipe._id)'>
+                <mat-icon color='warn'>delete</mat-icon>
+        </button>
+        </div>
+
+    </mat-card-header>
+
+    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+
+    <mat-card-content class="my-3">
+        <div class="row">
+            <div class="col-6">
+                <h3 class="m-0">Cuisine Name:</h3>
+                <h2 class="m-0">{{recipe.cuisine}}</h2>
+            </div>
+            <div class="col-6">
+                <h3 class="m-0">Specialty Of:</h3>
+                <h2 class="m-0">{{recipe.specialty}}</h2>
+            </div>
+        </div>
+        <hr>
+        <h3 class="m-0 mt-3">Description:</h3>
+        <p class="m-0" style="font-weight:500;">{{recipe.description}}</p>
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-actions class="card-footer">
+        <div>
+            <a routerLink='/' mat-icon-button matTooltip='View'>
+                <mat-icon color='primary'>reply</mat-icon>
+            </a>
+
+            <a [routerLink]="['/edit-recipe', recipe._id]" mat-icon-button matTooltip='Edit'>
+                <mat-icon color='orange'>create</mat-icon>
+            </a>
+
+            <button mat-icon-button matTooltip='Delete' (click)='deleteRecipe(recipe._id)'>
+                  <mat-icon color='warn'>delete</mat-icon>
+                </button>
+
+        </div>
+        <div class="align-self-center">
+            {{recipe.date | date}}
+        </div>
+    </mat-card-actions>
+
+</mat-card>

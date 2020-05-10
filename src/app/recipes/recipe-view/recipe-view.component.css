@@ -1,0 +1,13 @@
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+mat-card-content {
+    word-wrap: break-word;
+}
+
+.example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+}

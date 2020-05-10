@@ -1,0 +1,49 @@
+<mat-card class='my-5 mat-elevation-z5 p-0'>
+    <mat-card-header class="mat-card-header">
+        <mat-card-title class="p-2" *ngIf='!editMode'>ADD RECIPE</mat-card-title>
+        <mat-card-title class="p-2" *ngIf='editMode'>EDIT RECIPE</mat-card-title>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <form #recipeForm="ngForm" (ngSubmit)="saveRecipe(recipeForm)">
+        <mat-card-content class="p-3">
+
+            <mat-form-field appearance="outline" class="py-3">
+                <mat-label>Recipe Title</mat-label>
+                <input name="title" #title="ngModel" type='text' matInput [ngModel]='recipe.title' required>
+                <mat-error *ngIf="title.errors?.required">Recipe t itle is required.</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="py-3">
+                <mat-label>Cuisine Name</mat-label>
+                <input name="cuisine" #cuisine="ngModel" type='text' matInput [ngModel]='recipe.cuisine' required>
+                <mat-error *ngIf="cuisine.errors?.required">Cuisine name is required.</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="py-3">
+                <mat-label>Chef Name</mat-label>
+                <input name="chefName" #chef="ngModel" type='text' matInput [ngModel]='recipe.chefName' required>
+                <mat-error *ngIf="chef.errors?.required">Chef name is required.</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="py-3">
+                <mat-label>specialty of</mat-label>
+                <input name="specialty" #specialty="ngModel" type='text' placeholder="Enter name of a country" matInput [ngModel]='recipe.specialty'>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="py-3">
+                <mat-label>Recipe Description</mat-label>
+                <textarea name="description" #description="ngModel" matInput rows="6" [ngModel]='recipe.description' required minlength="20"></textarea>
+                <mat-error *ngIf="description.errors?.required && description.touched">Recipe Description is required.</mat-error>
+                <mat-error *ngIf="description.errors?.minlength">A minimum of 20 characters is required.</mat-error>
+            </mat-form-field>
+        </mat-card-content>
+
+        <mat-divider></mat-divider>
+
+        <button mat-raised-button type="submit" class="m-2" color="accent" *ngIf='!editMode'>ADD</button>
+        <button mat-raised-button type="submit" class="m-2" style="background-color: orange;" *ngIf='editMode'>UPDATE</button>
+    </form>
+
+</mat-card>
