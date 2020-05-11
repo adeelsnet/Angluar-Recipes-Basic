@@ -27,19 +27,52 @@ export class RecipeService {
   }
 
   addRecipe(recipe: Recipe) {
-    this.http.post('http://localhost:3000/api/recipe', recipe)
-      .subscribe((res) => {
-        this.recipes.push(recipe);
+    // this.http.post('http://localhost:3000/api/recipe', recipe)
+    //   .subscribe((res) => {
+    //     this.recipes.push(recipe);
+    //     this.recipeUpdates.next([...this.recipes]);
+    //   });
+    const recipeData = new FormData();
+    recipeData.append("title", recipe.title);
+    recipeData.append("cuisine", recipe.cuisine);
+    recipeData.append("chefName", recipe.chefName);
+    recipeData.append("description", recipe.description);
+    recipeData.append("specialty", recipe.specialty);
+    recipeData.append("image", recipe.image);
+
+    this.http.post<{message: string, recipe: Recipe}>(`http://localhost:3000/api/recipe/`, recipeData)
+      .subscribe((resRecipe) => {
+        this.recipes.push(resRecipe.recipe);
         this.recipeUpdates.next([...this.recipes]);
       });
+
   }
 
   updateRecipe(recipe: Recipe) {
-    this.http.put(`http://localhost:3000/api/recipe/${recipe._id}`, recipe)
+    this.http.put<{message: string, recipe: Recipe}>(`http://localhost:3000/api/recipe/${recipe._id}`, recipe)
       .subscribe(() => {
         const updatedRecipes = [...this.recipes];
         const oldRecipeIndex = updatedRecipes.findIndex(r => r._id === recipe._id)
         updatedRecipes[oldRecipeIndex] = recipe;
+        this.recipes = updatedRecipes;
+        this.recipeUpdates.next([...this.recipes]);
+      });
+  }
+
+  updateRecipeWithImage(recipe: Recipe) {
+    const recipeData = new FormData();
+    recipeData.append("title", recipe.title);
+    recipeData.append("cuisine", recipe.cuisine);
+    recipeData.append("chefName", recipe.chefName);
+    recipeData.append("description", recipe.description);
+    recipeData.append("specialty", recipe.specialty);
+    recipeData.append("image", recipe.image);
+
+    this.http.put<{message: string, recipe: Recipe}>(`http://localhost:3000/api/recipe/${recipe._id}`, recipeData)
+      .subscribe((resRecipe) => {
+        const updatedRecipes = [...this.recipes];
+        const oldRecipeIndex = updatedRecipes.findIndex(r => r._id === recipe._id)
+        updatedRecipes[oldRecipeIndex] = resRecipe.recipe;
         this.recipes = updatedRecipes;
         this.recipeUpdates.next([...this.recipes]);
       });

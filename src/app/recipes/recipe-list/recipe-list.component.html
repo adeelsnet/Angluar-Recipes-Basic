@@ -34,12 +34,12 @@
         </mat-card> -->
         <mat-card class="my-3">
             <mat-card-header>
-                <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+                <img mat-card-avatar [src]="recipe.image" [alt]="recipe.title">
                 <mat-card-title>{{recipe.title}}</mat-card-title>
                 <mat-card-subtitle>By Chef: {{recipe.chefName}}</mat-card-subtitle>
             </mat-card-header>
 
-            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+            <img class="img-height" mat-card-image [src]="recipe.image" alt="recipe.title" *ngIf="recipe.image">
 
             <mat-card-content class="my-3">
                 <div class="row">
@@ -86,7 +86,7 @@
     <div class="col-12 mx-auto">
         <mat-card>
             <mat-card-content>
-                <p class="mat-body-1">No Posts</p>
+                <p class="mat-body-1">No Recipe to show</p>
             </mat-card-content>
         </mat-card>
     </div>

@@ -3,12 +3,14 @@ input {
     width: 100%;
 }
 
+img {
+    height: 10rem;
+    width: 10rem;
+    border-radius: 50%;
+}
+
 .mat-card-header {
     background-color: #fa4081;
     color: white;
     justify-content: center;
-}
-
-.tooltip-red {
-    background: #b71c1c;
 }

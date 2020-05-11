@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const recipeRoutes = require('./routes/recipes');
+const path = require('path');
 
 mongoose.connect('mongodb+srv://adeel:passwordpassword@ngblog-k3fev.mongodb.net/recipe?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -10,6 +11,8 @@ mongoose.connect('mongodb+srv://adeel:passwordpassword@ngblog-k3fev.mongodb.net/
     .catch((error) => {
         console.log(error);
     });
+
+app.use('/images', express.static(path.join('backend/images')));
 
 app.use(express.json()); //It must be use to parse incoming data request to JSON that will be as --body--
 app.use(express.urlencoded({ extended: false }));

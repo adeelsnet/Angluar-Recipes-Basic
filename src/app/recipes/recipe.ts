@@ -6,4 +6,5 @@ export interface Recipe {
   description: string,
   specialty?: string,
   date?:  Date,
+  image?: any
 }

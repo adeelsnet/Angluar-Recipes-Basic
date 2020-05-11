@@ -12,9 +12,12 @@ import { isNull } from 'util';
 })
 export class RecipeCreateComponent implements OnInit {
 
+  img;
+  imgPreview;
   editMode: boolean = false;
   private recipeId: string;
   recipe: Recipe = { title: '', cuisine: '', chefName: '', description: '' };
+
 
   constructor(private recipeService: RecipeService, public route: ActivatedRoute, private router: Router) { }
 
@@ -45,14 +48,18 @@ export class RecipeCreateComponent implements OnInit {
           chefName: form.value.chefName,
           description: form.value.description
         }
-        if(form.value.specialty === '' || form.value.specialty === null || form.value.specialty === 'Not Available'){
+        if (form.value.specialty === undefined || form.value.specialty === '' || form.value.specialty === null || form.value.specialty === 'Not Available') {
           recipe.specialty = 'N/A';
-          console.log(recipe.specialty);
+          // console.log(recipe.specialty);
         } else {
           recipe.specialty = form.value.specialty;
-          // console.log(recipe.specialty);
         }
-        this.recipeService.updateRecipe(recipe);
+        if (this.img) {
+          recipe['image'] = this.img;
+          this.recipeService.updateRecipeWithImage(recipe);
+        } else {
+          this.recipeService.updateRecipe(recipe);
+        }
       } else {
         const recipe = {
           title: form.value.title,
@@ -61,10 +68,29 @@ export class RecipeCreateComponent implements OnInit {
           specialty: form.value.specialty,
           description: form.value.description
         }
+        if (form.value.specialty === undefined || form.value.specialty === '' || form.value.specialty === null || form.value.specialty === 'Not Available') {
+          recipe.specialty = 'N/A';
+          // console.log(recipe.specialty);
+        } else {
+          recipe.specialty = form.value.specialty;
+        }
+        if (this.img) {
+          recipe['image'] = this.img;
+        }
         this.recipeService.addRecipe(recipe);
         form.reset();
       }
       this.router.navigate(['/']);
     }
+  }
+
+  onImagePicked(event: Event) {
+    this.img = (event.target as HTMLInputElement).files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(this.img);
+    reader.onload = () => {
+      this.imgPreview = reader.result;
+    };
   }
 }

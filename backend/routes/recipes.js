@@ -1,8 +1,36 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Recipe = require('../models/recipe');
+const multer = require('multer');
 
 const router = express.Router();
+
+const MIME_TYPES = {
+    'image/png': 'png',
+    'image/jpg': 'jpg',
+    'image/jpeg': 'jpg'
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, callBackFunction) => {
+        const isValid = MIME_TYPES[file.mimetype];
+        let error = new Error('Invalid Image')
+
+        if (isValid) {
+            error = null;
+        }
+        // callBackFunction(null, "backend/images");
+        callBackFunction(error, "backend/images");
+    },
+
+    filename: (req, file, cbf) => {
+
+        const name = file.originalname.toLowerCase().split(' ').join('-');
+        const ext = MIME_TYPES[file.mimetype];
+        // cbf(null, file.originalname);
+        cbf(null, name + '-' + Date.now() + '.' + ext);
+    }
+})
 
 // Get all Recipes
 router.get('/api/all-recipes', (req, res, next) => {
@@ -38,8 +66,8 @@ router.get('/api/recipe/:id', (req, res, next) => {
 });
 
 // Add a Recipe
-router.post('/api/recipe', (req, res, next) => {
-
+router.post('/api/recipe', multer({ storage: storage }).single('image'), (req, res, next) => {
+    const url = req.protocol + '://' + req.get('host');
     const recipe = new Recipe({
         _id: mongoose.Types.ObjectId(), // not necessary required as MongoDb creates it automatically
         title: req.body.title,
@@ -47,13 +75,21 @@ router.post('/api/recipe', (req, res, next) => {
         chefName: req.body.chefName,
         description: req.body.description,
         specialty: req.body.specialty,
-        date: new Date()
+        date: new Date(),
+        // image: url + '/images/' + req.file.filename
     });
+    if (req.file) {
+        recipe.image = url + '/images/' + req.file.filename;
+
+    } else {
+        recipe.image = url + '/images/no-image.png-1589171517312.png'
+    }
 
     recipe.save()
-        .then(() => {
+        .then((recipe) => {
             res.status(201).json({
                 message: 'Recipe added succesfully',
+                recipe: recipe
             });
         })
         .catch((error) => {
@@ -64,7 +100,7 @@ router.post('/api/recipe', (req, res, next) => {
 });
 
 // Edit a Recipe
-router.put('/api/recipe/:id', (req, res, next) => {
+router.put('/api/recipe/:id', multer({ storage: storage }).single('image'), (req, res, next) => {
 
     const recipe = new Recipe({
         _id: req.body._id, //or req.params.id
@@ -75,18 +111,35 @@ router.put('/api/recipe/:id', (req, res, next) => {
         specialty: req.body.specialty,
         date: new Date(),
     });
-    // console.log(req.body.specialty)
-    Recipe.updateOne({ _id: req.params.id }, recipe)
-        .then(() => {
-            res.status(200).json({
-                message: 'Recipe updated succesfully'
-            });
-        })
-        .catch((error) => {
-            res.status(500).json({
-                error: error
-            });
+
+    if (req.file) {
+        Recipe.find({ _id: req.params.id }).then(() => {
+            const url = req.protocol + '://' + req.get('host');
+            recipe.image = url + '/images/' + req.file.filename;
+
+            Recipe.updateOne({ _id: req.params.id }, recipe)
+                .then((result) => {
+                    res.status(200).json({
+                        message: 'Recipe updated succesfully',
+                        recipe: result
+                    });
+                })
         });
+    } else {
+        Recipe.updateOne({ _id: req.params.id }, recipe)
+            .then((recipe) => {
+                res.status(200).json({
+                    message: 'Recipe updated succesfully',
+                    recipe: recipe
+                });
+            })
+            .catch((error) => {
+                res.status(500).json({
+                    error: error
+                });
+            });
+    }
+
 });
 
 // Delete a Recipe

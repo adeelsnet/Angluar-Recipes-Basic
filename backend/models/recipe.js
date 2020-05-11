@@ -8,6 +8,7 @@ const RecipeSchema = mongoose.Schema({
     specialty: { type: String, default: 'N/A' },
     chefName: { type: String, required: true },
     date: Date,
+    image: String
 });
 
 module.exports = mongoose.model('Recipe', RecipeSchema);
