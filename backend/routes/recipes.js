@@ -11,6 +11,7 @@ const MIME_TYPES = {
     'image/jpeg': 'jpg'
 }
 
+
 const storage = multer.diskStorage({
     destination: (req, file, callBackFunction) => {
         const isValid = MIME_TYPES[file.mimetype];
@@ -26,6 +27,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cbf) => {
 
         const name = file.originalname.toLowerCase().split(' ').join('-');
+        console.log(name);
         const ext = MIME_TYPES[file.mimetype];
         // cbf(null, file.originalname);
         cbf(null, name + '-' + Date.now() + '.' + ext);

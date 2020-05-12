@@ -18,6 +18,7 @@ export class RecipeService {
     this.http.get<{ message: string, recipes: Recipe[] }>('http://localhost:3000/api/all-recipes')
       .subscribe((res) => {
         this.recipes = res.recipes;
+        // console.log(this.recipes)
         this.recipeUpdates.next([...this.recipes]);
       });
   }
@@ -27,18 +28,13 @@ export class RecipeService {
   }
 
   addRecipe(recipe: Recipe) {
-    // this.http.post('http://localhost:3000/api/recipe', recipe)
-    //   .subscribe((res) => {
-    //     this.recipes.push(recipe);
-    //     this.recipeUpdates.next([...this.recipes]);
-    //   });
     const recipeData = new FormData();
     recipeData.append("title", recipe.title);
     recipeData.append("cuisine", recipe.cuisine);
     recipeData.append("chefName", recipe.chefName);
     recipeData.append("description", recipe.description);
     recipeData.append("specialty", recipe.specialty);
-    recipeData.append("image", recipe.image);
+    recipeData.append("image", recipe.image, recipe.title);
 
     this.http.post<{message: string, recipe: Recipe}>(`http://localhost:3000/api/recipe/`, recipeData)
       .subscribe((resRecipe) => {
@@ -51,10 +47,12 @@ export class RecipeService {
   updateRecipe(recipe: Recipe) {
     this.http.put<{message: string, recipe: Recipe}>(`http://localhost:3000/api/recipe/${recipe._id}`, recipe)
       .subscribe(() => {
+
         const updatedRecipes = [...this.recipes];
         const oldRecipeIndex = updatedRecipes.findIndex(r => r._id === recipe._id)
         updatedRecipes[oldRecipeIndex] = recipe;
         this.recipes = updatedRecipes;
+        this.getRecipes();
         this.recipeUpdates.next([...this.recipes]);
       });
   }
@@ -66,7 +64,7 @@ export class RecipeService {
     recipeData.append("chefName", recipe.chefName);
     recipeData.append("description", recipe.description);
     recipeData.append("specialty", recipe.specialty);
-    recipeData.append("image", recipe.image);
+    recipeData.append("image", recipe.image, recipe.title);
 
     this.http.put<{message: string, recipe: Recipe}>(`http://localhost:3000/api/recipe/${recipe._id}`, recipeData)
       .subscribe((resRecipe) => {
@@ -74,6 +72,7 @@ export class RecipeService {
         const oldRecipeIndex = updatedRecipes.findIndex(r => r._id === recipe._id)
         updatedRecipes[oldRecipeIndex] = resRecipe.recipe;
         this.recipes = updatedRecipes;
+        this.getRecipes();
         this.recipeUpdates.next([...this.recipes]);
       });
   }
